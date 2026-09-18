@@ -339,6 +339,20 @@ describe("Pi extension wiring", () => {
     expect(low.appended).toHaveLength(1);
   });
 
+  it("captures cacheRead and cacheWrite from the last assistant message", async () => {
+    const harness = createHarness();
+    await start(harness);
+    await harness.emit("turn_end");
+    expect(harness.appended).toHaveLength(1);
+    const data = harness.appended[0]?.data as {
+      stats: { cacheRead?: number; cacheWrite?: number };
+    };
+    expect(data.stats).toHaveProperty("cacheRead");
+    expect(data.stats).toHaveProperty("cacheWrite");
+    expect(typeof data.stats.cacheRead).toBe("number");
+    expect(typeof data.stats.cacheWrite).toBe("number");
+  });
+
   it("supports status, on, off, and forced run commands", async () => {
     const harness = createHarness();
     await start(harness);

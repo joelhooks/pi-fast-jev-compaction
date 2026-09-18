@@ -168,6 +168,16 @@ export function installFastJevCompaction(
     const after = applyLedger(messages, staged, config.truncateHeadChars);
     const charsBefore = measureContextChars(before);
     const charsAfter = measureContextChars(after);
+    let cacheRead = 0;
+    let cacheWrite = 0;
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const m = messages[i];
+      if (m?.role === "assistant") {
+        cacheRead = m.usage.cacheRead ?? 0;
+        cacheWrite = m.usage.cacheWrite ?? 0;
+        break;
+      }
+    }
     const stats: LedgerRunStats = {
       ...result.stats,
       messagesBefore: before.length,
@@ -175,6 +185,8 @@ export function installFastJevCompaction(
       charsBefore,
       charsAfter,
       reductionRatio: reductionRatio(charsBefore, charsAfter),
+      cacheRead,
+      cacheWrite,
     };
     const entry: DecisionEntryData = {
       version: 1,

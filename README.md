@@ -129,6 +129,12 @@ npm run pack:dry
 
 Tests inject fake Jev answers and fake Pi APIs. The test suite never contacts TypeSafe.
 
+## Cost
+
+Every ledger edit invalidates the provider's prompt cache from the first edited message onward. The proactive `turn_end` trigger repeats this every `cooldownTokens` of context growth. Each `fast-jev-decisions` entry records the `cacheRead` and `cacheWrite` token counts from the last assistant message before the run, so you can compute cache-write deltas across runs and evaluate the tradeoff.
+
+If cache writes dominate spend, increase `cooldownTokens` or raise `compactAtPercent` to run pruning less often.
+
 ## Limits
 
 - Tool-call/result pairing depends on Pi's tool-call IDs.
