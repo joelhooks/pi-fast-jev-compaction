@@ -8,6 +8,7 @@ import type {
 import type { CustomEntry } from "@earendil-works/pi-coding-agent";
 import { describe, expect, it } from "vitest";
 
+import { toolTranscript } from "../examples/tool-transcript.ts";
 import { adaptMessages } from "../src/adapter.ts";
 import {
   applyLedger,
@@ -207,6 +208,19 @@ describe("decision ledger", () => {
 });
 
 describe("ledger application", () => {
+  it("filters the before/after demo fixture deterministically", () => {
+    const ledger: DecisionLedger = new Map([
+      ["fixture-call", decision("fixture-call", "drop_result")],
+    ]);
+    const applied = applyLedger(toolTranscript, ledger, 80);
+    expect(applied).toHaveLength(toolTranscript.length);
+    expect(measureContextChars(applied)).toBeLessThan(
+      measureContextChars(toolTranscript)
+    );
+    expect(JSON.stringify(applied)).toContain("important header");
+    expect(JSON.stringify(applied)).toContain("fast-jev-compaction truncated");
+  });
+
   it("drops a call with its result and truncates another result only", () => {
     const original = messages();
     const ledger: DecisionLedger = new Map([

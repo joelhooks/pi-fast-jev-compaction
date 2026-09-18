@@ -22,9 +22,11 @@
   },
   "files": [
     "extensions",
+    "examples",
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "type": "module",
   "scripts": {
