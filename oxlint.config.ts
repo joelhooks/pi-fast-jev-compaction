@@ -8,6 +8,7 @@ export default defineConfig({
     typeAware: true,
   },
   rules: {
+    complexity: "off",
     "consistent-type-specifier-style": "off",
     curly: "off",
     "func-style": "off",
@@ -19,6 +20,7 @@ export default defineConfig({
     "promise/avoid-new": "off",
     "require-await": "off",
     "sort-keys": "off",
+    "typescript/consistent-type-exports": "off",
     "typescript/no-base-to-string": "off",
     "typescript/no-confusing-void-expression": "off",
     "typescript/no-unsafe-argument": "off",
