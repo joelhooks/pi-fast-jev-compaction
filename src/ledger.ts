@@ -20,6 +20,8 @@ export interface LedgerRunStats extends DecisionStats {
   charsBefore: number;
   charsAfter: number;
   reductionRatio: number;
+  cacheRead?: number;
+  cacheWrite?: number;
 }
 
 export interface DecisionEntryData {
@@ -141,6 +143,8 @@ export function applyLedger(
       return ledger.get(block.id)?.action !== "drop_call";
     });
     if (content.length === 0) return [];
+    if (!content.some((b) => b.type === "text" || b.type === "toolCall"))
+      return [];
     return content.length === message.content.length
       ? [message]
       : [{ ...message, content }];

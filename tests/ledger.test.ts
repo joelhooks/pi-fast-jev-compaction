@@ -302,6 +302,102 @@ describe("ledger application", () => {
     ]);
   });
 
+  it("removes an assistant message left with only thinking blocks after drop_call", () => {
+    const original: AgentMessage[] = [
+      user("go"),
+      assistant([
+        {
+          type: "thinking",
+          thinking: "reasoning",
+          thinkingSignature: "sig_abc",
+        },
+        {
+          type: "toolCall",
+          id: "call-x",
+          name: "read",
+          arguments: { path: "x.ts" },
+        },
+      ]),
+      toolResult("call-x", "file content"),
+    ];
+    const ledger: DecisionLedger = new Map([
+      ["call-x", decision("call-x", "drop_call")],
+    ]);
+    const applied = applyLedger(original, ledger, 50);
+    expect(applied).toEqual([user("go")]);
+  });
+
+  it("keeps an assistant message with thinking when at least one toolCall survives", () => {
+    const original: AgentMessage[] = [
+      user("go"),
+      assistant([
+        { type: "thinking", thinking: "reasoning" },
+        {
+          type: "toolCall",
+          id: "call-x",
+          name: "read",
+          arguments: { path: "x.ts" },
+        },
+        {
+          type: "toolCall",
+          id: "call-y",
+          name: "read",
+          arguments: { path: "y.ts" },
+        },
+      ]),
+      toolResult("call-x", "x content"),
+      toolResult("call-y", "y content"),
+    ];
+    const ledger: DecisionLedger = new Map([
+      ["call-x", decision("call-x", "drop_call")],
+    ]);
+    const applied = applyLedger(original, ledger, 50);
+    expect(applied.map((m) => m.role)).toEqual([
+      "user",
+      "assistant",
+      "toolResult",
+    ]);
+    const ast = applied[1];
+    if (ast?.role !== "assistant") throw new Error("expected assistant");
+    expect(ast.content).toEqual([
+      { type: "thinking", thinking: "reasoning" },
+      {
+        type: "toolCall",
+        id: "call-y",
+        name: "read",
+        arguments: { path: "y.ts" },
+      },
+    ]);
+  });
+
+  it("keeps thinking and text when all toolCalls are dropped", () => {
+    const original: AgentMessage[] = [
+      user("go"),
+      assistant([
+        { type: "thinking", thinking: "reasoning" },
+        { type: "text", text: "I see the issue." },
+        {
+          type: "toolCall",
+          id: "call-x",
+          name: "read",
+          arguments: { path: "x.ts" },
+        },
+      ]),
+      toolResult("call-x", "x content"),
+    ];
+    const ledger: DecisionLedger = new Map([
+      ["call-x", decision("call-x", "drop_call")],
+    ]);
+    const applied = applyLedger(original, ledger, 50);
+    expect(applied.map((m) => m.role)).toEqual(["user", "assistant"]);
+    const ast = applied[1];
+    if (ast?.role !== "assistant") throw new Error("expected assistant");
+    expect(ast.content).toEqual([
+      { type: "thinking", thinking: "reasoning" },
+      { type: "text", text: "I see the issue." },
+    ]);
+  });
+
   it("reports a positive character reduction without exposing message content", () => {
     const original = messages();
     const applied = applyLedger(
