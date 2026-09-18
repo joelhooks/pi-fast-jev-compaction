@@ -1,0 +1,7 @@
+node_modules/
+*.tgz
+.brain/
+BRAIN.md
+.pi/notes-bridge/
+coverage/
+.DS_Store

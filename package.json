@@ -1,0 +1,100 @@
+{
+  "name": "@joelhooks/pi-fast-jev-compaction",
+  "version": "0.1.0",
+  "description": "Verbatim context pruning for Pi using TypeSafe Jev decisions.",
+  "keywords": [
+    "compaction",
+    "context",
+    "jev",
+    "pi",
+    "pi-extension",
+    "pi-package"
+  ],
+  "homepage": "https://github.com/joelhooks/pi-fast-jev-compaction#readme",
+  "bugs": {
+    "url": "https://github.com/joelhooks/pi-fast-jev-compaction/issues"
+  },
+  "license": "MIT",
+  "author": "Joel Hooks <joel@joelhooks.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelhooks/pi-fast-jev-compaction.git"
+  },
+  "files": [
+    "extensions",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "ultracite check",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "pack:dry": "npm pack --dry-run",
+    "demo": "node --experimental-strip-types examples/demo.ts"
+  },
+  "dependencies": {
+    "@earendil-works/pi-tui": "0.85.1",
+    "xstate": "5.32.5"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-agent-core": "0.85.1",
+    "@earendil-works/pi-ai": "0.85.1",
+    "@earendil-works/pi-coding-agent": "0.85.1",
+    "@types/node": "24.13.3",
+    "oxfmt": "0.59.0",
+    "oxlint": "1.74.0",
+    "oxlint-tsgolint": "0.24.0",
+    "turbo": "2.10.5",
+    "typebox": "1.3.14",
+    "typescript": "7.0.2",
+    "ultracite": "7.9.4",
+    "vitest": "4.1.10"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-agent-core": "*",
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-agent-core": {
+      "optional": true
+    },
+    "@earendil-works/pi-ai": {
+      "optional": true
+    },
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    },
+    "typebox": {
+      "optional": true
+    }
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "11.16.0",
+      "onFail": "error"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=24.18.0 <25",
+      "onFail": "error"
+    }
+  },
+  "engines": {
+    "node": ">=24.18.0 <25",
+    "npm": ">=11.16.0 <12"
+  },
+  "packageManager": "npm@11.16.0",
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  }
+}
